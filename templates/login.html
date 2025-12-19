@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In – LearnPath{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7 col-sm-9">
+
+                <div class="auth-card animate__animated animate__fadeInUp">
+                    
+                    <!-- Header -->
+                    <div class="auth-header text-center">
+                        <i class="bx bxs-graduation auth-icon"></i>
+                        <h2 class="auth-title">Welcome Back!</h2>
+                        <p class="auth-subtitle">Sign in to continue your learning journey</p>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="auth-body">
+                        <form method="POST" action="{{ url_for('login') }}">
+                            
+                            <div class="input-group-custom mb-4">
+                                <i class="bx bx-envelope input-icon"></i>
+                                <input type="email" 
+                                       class="form-control-custom" 
+                                       name="email" 
+                                       placeholder="you@example.com"
+                                       value="{{ request.form.email or '' }}"
+                                       required autofocus>
+                            </div>
+
+                            <div class="input-group-custom mb-4">
+                                <i class="bx bx-lock-alt input-icon"></i>
+                                <input type="password" 
+                                       class="form-control-custom" 
+                                       name="password" 
+                                       placeholder="Enter your password"
+                                       required>
+                            </div>
+
+                            <button type="submit" class="btn-auth-primary w-100">
+                                <i class="bx bx-log-in-circle me-2"></i>
+                                Sign In
+                            </button>
+                        </form>
+
+                        <div class="divider-line">
+                            <span>or</span>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-0">
+                                Don't have an account?
+                                <a href="{{ url_for('register') }}" class="auth-link">
+                                    Sign up for free
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

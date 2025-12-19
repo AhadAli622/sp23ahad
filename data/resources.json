@@ -1,0 +1,111 @@
+[
+  {
+    "id": "python_1",
+    "categories": ["Python Programming", "Programming"],
+    "level": "beginner",
+    "type": "video",
+    "title": "Python Full Course for Beginners – freeCodeCamp",
+    "url": "https://www.youtube.com/watch?v=rfscVS0vtbw",
+    "note": "Comprehensive beginner-friendly video"
+  },
+  {
+    "id": "python_2",
+    "categories": ["Python Programming", "Programming"],
+    "level": "all",
+    "type": "text",
+    "title": "Official Python Tutorial",
+    "url": "https://docs.python.org/3/tutorial/",
+    "note": "Reference and tutorial from Python docs"
+  },
+  {
+    "id": "python_3",
+    "categories": ["Python Programming", "Practice"],
+    "level": "beginner",
+    "type": "practice",
+    "title": "Beginner Python Problems – HackerRank",
+    "url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+    "note": "Hands-on beginner problems"
+  },
+  {
+    "id": "web_1",
+    "categories": ["Web Development", "Frontend"],
+    "level": "beginner",
+    "type": "video",
+    "title": "HTML & CSS Crash Course – Traversy Media",
+    "url": "https://www.youtube.com/watch?v=UB1O30fR-EE",
+    "note": "Good starter crash course for layout and styling"
+  },
+  {
+    "id": "web_2",
+    "categories": ["Web Development", "Frontend"],
+    "level": "all",
+    "type": "text",
+    "title": "MDN Web Docs – HTML Guide",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn/HTML",
+    "note": "Authoritative documentation for HTML and web basics"
+  },
+  {
+    "id": "data_1",
+    "categories": ["Data Analysis", "Data Science"],
+    "level": "beginner",
+    "type": "video",
+    "title": "Data Analysis with Python – freeCodeCamp",
+    "url": "https://www.youtube.com/watch?v=r-uOLxNrNk8",
+    "note": "Intro course for data analysis using Python"
+  },
+  {
+    "id": "general_1",
+    "categories": ["General"],
+    "level": "all",
+    "type": "video",
+    "title": "How to Learn Anything Fast – Ali Abdaal",
+    "url": "https://www.youtube.com/watch?v=LPDhuthFD98",
+    "note": "Study advice and techniques"
+  }
+  ,
+  {
+    "id": "js_1",
+    "categories": ["JavaScript", "Web Development", "Frontend"],
+    "level": "all",
+    "type": "video",
+    "title": "JavaScript Tutorial for Beginners – Programming with Mosh",
+    "url": "https://www.youtube.com/watch?v=W6NZfCO5SIk",
+    "note": "Comprehensive JavaScript beginner course"
+  },
+  {
+    "id": "java_1",
+    "categories": ["Java"],
+    "level": "all",
+    "type": "text",
+    "title": "Java | Oracle Tutorials",
+    "url": "https://docs.oracle.com/javase/tutorial/",
+    "note": "Official Java tutorials"
+  },
+  {
+    "id": "cpp_1",
+    "categories": ["C++", "Programming"],
+    "level": "all",
+    "type": "text",
+    "title": "C++ Language Tutorial – cplusplus.com",
+    "url": "https://www.cplusplus.com/doc/tutorial/",
+    "note": "Good reference for C++ basics"
+  },
+  {
+    "id": "go_1",
+    "categories": ["Go", "Programming"],
+    "level": "beginner",
+    "type": "text",
+    "title": "A Tour of Go",
+    "url": "https://tour.golang.org/",
+    "note": "Official interactive Go tour"
+  },
+  {
+    "id": "rust_1",
+    "categories": ["Rust", "Programming"],
+    "level": "beginner",
+    "type": "text",
+    "title": "The Rust Programming Language",
+    "url": "https://doc.rust-lang.org/book/",
+    "note": "Official Rust book"
+  }
+]

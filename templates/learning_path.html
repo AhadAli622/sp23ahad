@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}My Learning Path – LearnPath{% endblock %}
+
+{% block content %}
+
+<div class="container py-4 py-lg-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="hero-title mb-3">Your Learning Path</h1>
+        <p class="hero-subtitle">A {{ profile.duration_weeks }}-week personalized roadmap</p>
+    </div>
+
+    <div class="row g-4 g-xl-5">
+
+        <!-- Left: Summary Card -->
+        <div class="col-lg-4">
+            <div class="summary-card shadow-sm border rounded-3 p-4">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <i class='bx bxs-map-alt text-primary' style="font-size:2.5rem;"></i>
+                    <h4 class="mb-0">Plan Summary</h4>
+                </div>
+
+                {% if plan %}
+                    <p class="text-muted small mb-3">
+                        Created: {{ plan.created_at.strftime("%B %d, %Y") }}
+                    </p>
+                {% endif %}
+
+                <ul class="list-unstyled plan-details">
+                    <li class="d-flex justify-content-between py-2"><strong>Goal:</strong> <span>{{ profile.goal }}</span></li>
+                    <li class="d-flex justify-content-between py-2"><strong>Level:</strong> <span>{{ profile.level }}</span></li>
+                    <li class="d-flex justify-content-between py-2"><strong>Time/week:</strong> <span>{{ profile.hours_per_week }} hours</span></li>
+                    <li class="d-flex justify-content-between py-2 border-top pt-3 mt-2">
+                        <strong>Duration:</strong> <span class="text-primary fw-bold">{{ profile.duration_weeks }} weeks</span>
+                    </li>
+                </ul>
+
+                <hr class="my-4">
+
+                <!-- Yeh wala part pura change kar diya — ab bohot premium lagta hai -->
+                <div class="chat-cta-card bg-gradient-primary text-white rounded-4 p-4 shadow-lg border-0">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="chat-icon-bg rounded-3 p-2">
+                            <i class='bx bxs-message-rounded-dots' style="font-size: 1.8rem;"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">Your Chats</h5>
+                            <small class="opacity-90">Continue learning with your coach</small>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-sm rounded-pill px-4 mt-3 fw-semibold">
+                        <i class='bx bx-arrow-back me-2'></i> Back to Chat
+                    </a>
+                </div>
+                <!-- End of beautiful chat card -->
+            </div>
+        </div>
+
+        <!-- Right: Weekly Steps (already fixed gap) -->
+        <div class="col-lg-8">
+            {% if path %}
+                {% for step in path %}
+                    <div class="week-card-compact shadow-sm border rounded-3 p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h3 class="h5 fw-bold mb-0 text-dark">
+                                Week {{ step.week }} – Step {{ step.step }}
+                            </h3>
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                ~{{ step.hours }} hours
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong class="text-primary">Focus:</strong> {{ step.topic }}
+                        </div>
+
+                        <div class="mb-3">
+                            <strong class="text-success">Mode:</strong> 
+                            <span class="badge bg-success-subtle text-success px-3 py-1 ms-2">{{ step.mode }}</span>
+                        </div>
+
+                        {% if step.resources %}
+                            <div>
+                                <strong class="d-block mb-2">Resources:</strong>
+                                <ul class="list-unstyled mb-0 ps-4">
+                                    {% for r in step.resources %}
+                                        <li class="mb-3">
+                                            {% if r.url %}
+                                                <a href="{{ r.url }}" target="_blank" class="text-decoration-none text-dark">
+                                                    <strong>{{ r.type|capitalize }}:</strong> {{ r.title }}
+                                                    <i class='bx bx-link-external ms-1 text-primary'></i>
+                                                </a>
+                                            {% else %}
+                                                <strong>{{ r.type|capitalize }}:</strong> {{ r.title }}
+                                            {% endif %}
+                                            {% if r.level_note %}
+                                                <small class="text-muted ms-2">({{ r.level_note }})</small>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p class="text-muted small mb-0">
+                                No specific resources. Search for "{{ step.topic }}" at your level.
+                            </p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class='bx bxs-error' style="font-size:4rem; color:#94a3b8;"></i>
+                    <h4 class="mt-3">No learning path yet</h4>
+                    <p class="text-muted">Start chatting with your coach to generate one!</p>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary-custom mt-3">Go to Chat</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS (gap fix + beautiful chat card) -->
+<style>
+    .week-card-compact {
+        margin-bottom: 1.5rem !important;
+        transition: all 0.3s ease;
+    }
+    .week-card-compact:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.1)!important;
+    }
+    .week-card-compact:last-child { margin-bottom: 0 !important; }
+
+    /* Premium Chat Card */
+    .chat-cta-card {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    .chat-cta-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255,255,255,0.1);
+        transform: rotate(30deg);
+        pointer-events: none;
+    }
+    .chat-icon-bg {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up – LearnPath{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7 col-sm-9">
+
+                <div class="auth-card animate__animated animate__fadeInUp">
+                    
+                    <!-- Header -->
+                    <div class="auth-header text-center">
+                        <i class="bx bxs-rocket auth-icon"></i>
+                        <h2 class="auth-title">Create your account</h2>
+                        <p class="auth-subtitle">Takes less than 60 seconds — then chat with your AI coach!</p>
+                    </div>
+
+                    <!-- Form Body -->
+                    <div class="auth-body">
+                        <form method="POST" action="{{ url_for('register') }}">
+                            
+                            <div class="input-group-custom mb-4">
+                                <i class="bx bx-user input-icon"></i>
+                                <input type="text"
+                                       class="form-control-custom"
+                                       id="name"
+                                       name="name"
+                                       placeholder="Full Name"
+                                       required>
+                            </div>
+
+                            <div class="input-group-custom mb-4">
+                                <i class="bx bx-envelope input-icon"></i>
+                                <input type="email"
+                                       class="form-control-custom"
+                                       id="email"
+                                       name="email"
+                                       placeholder="you@example.com"
+                                       required>
+                            </div>
+
+                            <div class="input-group-custom mb-4">
+                                <i class="bx bx-lock-alt input-icon"></i>
+                                <input type="password"
+                                       class="form-control-custom"
+                                       id="password"
+                                       name="password"
+                                       placeholder="Choose a strong password"
+                                       minlength="6"
+                                       required>
+                            </div>
+
+                            <button type="submit" class="btn-auth-primary w-100">
+                                <i class="bx bxs-zap me-2"></i>
+                                Create Account
+                            </button>
+                        </form>
+
+                        <div class="divider-line">
+                            <span>or</span>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-0">
+                                Already have an account?
+                                <a href="{{ url_for('login') }}" class="auth-link">
+                                    Sign in here
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

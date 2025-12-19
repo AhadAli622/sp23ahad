@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard – LearnPath{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-layout">
+    <div class="container-fluid px-4 py-4">
+
+        <div class="row g-4">
+
+            <!-- LEFT: Upgraded Your Chats Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar-card h-100 d-flex flex-column shadow-sm border-0 rounded-4 overflow-hidden" style="background:white;">
+                    
+                    <div class="d-flex align-items-center justify-content-between p-4 text-white" 
+                         style="background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);">
+                        <h6 class="mb-0 fw-semibold">Your Chats</h6>
+                        <a href="{{ url_for('new_chat') }}" 
+                           class="btn btn-light btn-sm rounded-pill px-3 fw-medium shadow-sm d-flex align-items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a.5.5 0 0 1 .5.5V7h5.5a.5.5 0 0 1 0 1H8.5v5.5a.5.5 0 0 1-1 0V8H2a.5.5 0 0 1 0-1h5.5V1.5A.5.5 0 0 1 8 1z"/>
+                            </svg>
+                            New Chat
+                        </a>
+                    </div>
+
+                    <div class="chat-history-list flex-grow-1 overflow-auto" style="background:#fafbfe;">
+                        {% if conversations %}
+                            {% for conv in conversations %}
+                                <a href="{{ url_for('dashboard', conversation_id=conv.id) }}" 
+                                   class="chat-history-item d-block text-decoration-none text-dark px-4 py-3 {% if conv.id == active_conversation.id %}active{% endif %}"
+                                   style="border-bottom:1px solid #f1f5f9; transition:all 0.25s ease;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                             style="width:44px; height:44px; background:{% if conv.id == active_conversation.id %}#6366f1{% else %}#e2e8f0{% endif %};">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="{% if conv.id == active_conversation.id %}white{% else %}#64748b{% endif %}" viewBox="0 0 16 16">
+                                                <path d="M8 15c-3.866 0-7-2.567-7-6s3.134-6 7-6c1.56 0 3.012.43 4.188 1.19l1.405-1.406A9.95 9.95 0 0 0 8 1C4.134 1 1 4.134 1 8s3.134 7 7 7c1.797 0 3.43-.653 4.688-1.727l-1.406-1.405A6.955 6.955 0 0 1 8 15z"/>
+                                                <path d="M14.146 5.146a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L10.5 8.793l3.646-3.647z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <div class="fw-600 text-truncate" style="font-size:15px;">
+                                                {{ conv.title or 'Untitled chat' }}
+                                            </div>
+                                            <div class="small text-muted">
+                                                {{ conv.updated_at.strftime("%b %d, %I:%M %p") if conv.updated_at else 'Just now' }}
+                                            </div>
+                                        </div>
+                                        {% if conv.id == active_conversation.id %}
+                                            <div style="width:10px; height:10px; background:#10b981; border-radius:50%; box-shadow:0 0 0 3px rgba(16,185,129,0.2);"></div>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-5 px-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#cbd5e1" viewBox="0 0 16 16">
+                                    <path d="M8 15c-3.866 0-7-2.567-7-6s3.134-6 7-6 7 2.567 7 6-3.134 6-7 6zM8 2C4.686 2 2 4.686 2 8s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/>
+                                    <path d="M8 11a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 1 0v4a.5.5 0 0 1-.5.5zM8 6a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1z"/>
+                                </svg>
+                                <p class="text-muted fw-medium mt-3 mb-1">No chats yet</p>
+                                <p class="text-muted small">Start a new conversation!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER: Main Chat Window (bilkul original rakha) -->
+            <div class="col-lg-6">
+                <div class="chat-card h-100 d-flex flex-column">
+
+                    <div class="chat-header-bar">
+                        <div>
+                            <h4 class="chat-title-main">Your Learning Coach</h4>
+                            <p class="chat-subtitle">Chat naturally → Get your custom learning path</p>
+                        </div>
+                        <span class="status-online">Online</span>
+                    </div>
+
+                    <div id="chat-window" class="chat-messages">
+                        {% for message in messages %}
+                            <div class="message-row {% if message.role == 'user' %}user-message{% else %}bot-message{% endif %}">
+                                <div class="message-bubble {% if message.role == 'user' %}bubble-user{% else %}bubble-bot{% endif %}">
+                                    <div class="message-sender">
+                                        {{ 'You' if message.role == 'user' else 'Coach' }}
+                                    </div>
+                                    <div class="message-text">
+                                        {{ message.content | replace('\n', '<br>') | safe }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {% if messages|length == 0 %}
+                            <div class="message-row bot-message">
+                                <div class="message-bubble bubble-bot">
+                                    <div class="message-sender">Coach</div>
+                                    <div class="message-text">
+                                        Hey {{ user.name }}! Great to see you.<br><br>
+                                        We can just talk first — no pressure.<br>
+                                        When you're ready to learn something, just say it and I’ll build you a perfect plan.
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <form id="chat-form" class="chat-input-form">
+                        <div class="input-group">
+                            <input type="text" id="chat-input" class="chat-input" placeholder="Type your message..." autocomplete="off" required>
+                            <button type="submit" id="send-btn" class="btn-send">
+                                Send
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RIGHT: Upgraded User Info & Plans (no more empty space) -->
+            <div class="col-lg-3">
+
+                <div class="mb-4 p-4 text-white rounded-4" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); box-shadow:0 10px 25px rgba(99,102,241,0.25);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white bg-opacity-20 d-flex align-items-center justify-content-center" style="width:56px; height:56px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">Hello, {{ user.name }}!</h5>
+                            <small class="opacity-90">Ready to level up today?</small>
+                        </div>
+                    </div>
+                </div>
+
+                {% if last_plan %}
+                    <div class="p-4 mb-4 position-relative overflow-hidden rounded-4" style="background:white; box-shadow:0 8px 25px rgba(0,0,0,0.08); border:2px solid #eef2ff;">
+                        <div class="position-absolute top-0 end-0 p-3">
+                            <span class="badge rounded-pill px-3 py-2 fw-semibold" style="background:#e0e7ff; color:#6366f1; font-size:12px;">Latest Path</span>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2">{{ last_plan.goal }}</h6>
+                        <p class="text-muted small mb-3">
+                            {{ last_plan.created_at.strftime("%B %d, %Y") }}
+                        </p>
+                        <a href="{{ url_for('learning_path', plan_id=last_plan.id) }}" 
+                           class="btn w-100 rounded-pill fw-semibold d-flex align-items-center justify-content-center gap-2" 
+                           style="background:#6366f1; color:white; padding:12px 0; box-shadow:0 4px 15px rgba(99,102,241,0.3);">
+                            View Learning Path
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="p-5 text-center mb-4 rounded-4" style="background:#fafbfe; border:2px dashed #cbd5e1;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="#cbd5e1" viewBox="0 0 16 16">
+                            <path d="M8 15c-3.866 0-7-2.567-7-6s3.134-6 7-6 7 2.567 7 6-3.134 6-7 6zM8 2C4.686 2 2 4.686 2 8s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/>
+                            <path d="M8 11a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 1 0v4a.5.5 0 0 1-.5.5zM8 6a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1z"/>
+                        </svg>
+                        <p class="mt-3 text-muted fw-medium">No learning path yet</p>
+                        <small class="text-muted">Chat to create your first one!</small>
+                    </div>
+                {% endif %}
+
+                {% if plans and plans|length > 1 %}
+                    <div class="p-4 rounded-4" style="background:white; box-shadow:0 8px 25px rgba(0,0,0,0.06);">
+                        <h6 class="fw-bold text-dark mb-3">Previous Paths</h6>
+                        <div class="d-flex flex-column gap-3">
+                            {% for p in plans %}
+                                {% if p.id != last_plan.id %}
+                                    <a href="{{ url_for('learning_path', plan_id=p.id) }}" 
+                                       class="d-block p-3 rounded-3 text-decoration-none" 
+                                       style="background:#f8faff; border:1px solid #eef2ff; transition:all 0.2s;">
+                                        <div class="fw-600 text-dark text-truncate">{{ p.goal }}</div>
+                                        <small class="text-muted">{{ p.created_at.strftime("%b %d, %Y") }}</small>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Original JavaScript (unchanged) -->
+<script>
+    const chatWindow = document.getElementById('chat-window');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-btn');
+    const ACTIVE_CONVERSATION_ID = {{ active_conversation.id }};
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    function showTyping() {
+        if (document.getElementById("typing-indicator")) return;
+        const row = document.createElement("div");
+        row.className = "message-row bot-message";
+        row.id = "typing-indicator";
+        row.innerHTML = `
+            <div class="message-bubble bubble-bot">
+                <div class="message-sender">Coach</div>
+                <div class="message-text typing-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        `;
+        chatWindow.appendChild(row);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function hideTyping() {
+        const el = document.getElementById("typing-indicator");
+        if (el) el.remove();
+    }
+
+    function appendMessage(role, text) {
+        const row = document.createElement('div');
+        row.className = `message-row ${role === 'user' ? 'user-message' : 'bot-message'}`;
+        const bubbleClass = role === 'user' ? 'bubble-user' : 'bubble-bot';
+        row.innerHTML = `
+            <div class="message-bubble ${bubbleClass}">
+                <div class="message-sender">${role === 'user' ? 'You' : 'Coach'}</div>
+                <div class="message-text">${text.replace(/\\n/g, '<br>')}</div>
+            </div>
+        `;
+        chatWindow.appendChild(row);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        appendMessage('user', message);
+        chatInput.value = '';
+        chatInput.disabled = true;
+        sendButton.disabled = true;
+        sendButton.textContent = 'Sending...';
+        showTyping();
+
+        try {
+            const res = await fetch("{{ url_for('chat_api') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+                body: JSON.stringify({ message, conversation_id: ACTIVE_CONVERSATION_ID })
+            });
+            const data = await res.json();
+            hideTyping();
+            appendMessage('bot', data.reply);
+
+            if (data.plan_ready && data.plan_id) {
+                appendMessage('bot', "Your learning path is ready! Taking you there...");
+                setTimeout(() => window.location.href = "/learning-path/" + data.plan_id, 1500);
+            }
+        } catch (err) {
+            hideTyping();
+            appendMessage('bot', "Error — please try again.");
+            console.error(err);
+        } finally {
+            chatInput.disabled = false;
+            sendButton.disabled = false;
+            sendButton.textContent = 'Send';
+            chatInput.focus();
+        }
+    });
+</script>
+
+{% endblock %}
